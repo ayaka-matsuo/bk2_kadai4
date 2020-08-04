@@ -37,6 +37,20 @@
 				  						<th>introduction</th>
 				  						<th><%= current_user.introduction %></th>
 				  					</tr>
+				  					<tr>
+						  				<th>follows</th>
+						  				<th><%= link_to following_user_path(current_user.id) do %>
+						  					<%= current_user.followings.count %>
+						  					<% end %>
+					  					</th>
+					  				</tr>
+					  				<tr>
+						  				<th>followers</th>
+						  				<th><%= link_to followers_user_path(current_user.id) do %>
+						  					<%= current_user.followers.count %>
+						  					<% end %>
+					  					</th>
+					  				</tr>
 			  					</tbody>
 			  				</table>
 
@@ -100,6 +114,21 @@
 											<%= "コメント数：" %><%= book.book_comments.count %>
 
 										</td>
+										<td>
+									 		<% unless current_user == book.user %>
+										  	<% if current_user.following?(book.user) %>
+										    	<%= form_for book.user, url:user_relationships_path(book.user.id),  method: :delete do |f| %>
+										      	<%= hidden_field_tag :follow_id, book.user %>
+										      	<%= f.submit 'フォローを外す' %>
+										    	<% end %>
+										  	<% else %>
+										   		<%= form_for book.user, url:user_relationships_path(book.user.id), method: :post do |f| %>
+												<%= hidden_field_tag :follow_id, book.user.id %>
+												<%= f.submit 'フォローする' %>
+										  		<% end %>
+										  	<% end %>
+											<% end %>
+					 					</td>
 					 				</tr>
 				 				<% end %>
 				 			</tbody>

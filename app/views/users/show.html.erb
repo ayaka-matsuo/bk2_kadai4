@@ -17,11 +17,42 @@
 					  				<th>introduction</th>
 					  				<th><%= @user.introduction %></th>
 					  			</tr>
+					  			<tr>
+					  				<th>follows</th>
+					  				<th><%= link_to following_user_path(@user) do %>
+					  					<%= @user.followings.count %>
+					  					<% end %>
+					  				</th>
+					  			</tr>
+					  			<tr>
+					  				<th>followers</th>
+					  				<th><%= link_to followers_user_path(@user) do %>
+					  					<%= @user.followers.count %>
+					  					<% end %>
+					  				</th>
+					  			</tr>
 				  			</tbody>
 				  		</table>
+				</div>
+				<div class="row">
 
 				  			<%= link_to "", edit_user_path(@user.id), class: "col-xs-10 btn btn-default glyphicon glyphicon-wrench" %>
 
+				  		<br>
+				  		<br>
+						<% unless current_user == @user %>
+						  	<% if current_user.following?(@user) %>
+						    	<%= form_for @user, url:user_relationships_path(@user.id), html: { method: :delete } do |f| %>
+						      	<%= hidden_field_tag :follow_id, @user.id %>
+						      	<%= f.submit 'フォローを外す', class: "col-xs-10 btn btn-primary" %>
+						    	<% end %>
+						  	<% else %>
+						   		<%= form_for @user, url:user_relationships_path(@user.id), html: { method: :post } do |f| %>
+								<%= hidden_field_tag :follow_id, @user.id %>
+								<%= f.submit 'フォローする', class: "col-xs-10 btn btn-success" %>
+						  		<% end %>
+						  	<% end %>
+						<% end %>
 				</div>
 
 				<div class="row">
